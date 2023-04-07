@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">File Writer Compat</string>
+
+    <string name="save_in_file">File</string>
+    <string name="save_in_cache">Cache</string>
+    <string name="internal_app_specific_label">Internal App-specific</string>
+    <string name="external_app_specific_label">External App-specific</string>
+    <string name="external_shareable_label">External Shareable File</string>
+</resources>
