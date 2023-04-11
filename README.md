@@ -3,7 +3,7 @@
 
 File Writer Compat
 ==============================
-Android file writing helper library for API Level 23+
+Android file writing helper library for API Level 21+
 
 Download
 ===============================
@@ -25,7 +25,7 @@ Feature
     * External app-specific file (`/<external_storage>/Android/data/<package_name>/files/`)
     * External app-specific cache (`/<external_storage>/Android/data/<package_name>/cache/`)
     * External shareable file (`/<external_storage>/<directory_type>/`)
-* Support for API level 23 - 33
+* Support for API level 21 - 33
 * Auto-create subdirectories
 * Built-in permission handling (additional dependency is required)
 * Auto media scanner triggers when saving a file in an external shareable directory
