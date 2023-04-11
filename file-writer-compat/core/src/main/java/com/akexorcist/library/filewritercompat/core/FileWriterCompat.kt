@@ -21,10 +21,9 @@ object FileWriterCompat {
         )
 
         fun createExternalAppSpecificFile(
-            directoryType: String,
             fileNameWithExtension: String,
         ) = ExternalAppSpecificFile.Builder(
-            directoryType = directoryType,
+            directoryType = null,
             childPath = null,
             fileNameWithExtension = fileNameWithExtension,
         )
