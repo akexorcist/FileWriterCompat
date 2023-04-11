@@ -43,7 +43,7 @@ class ExternalAppSpecificCache {
         private val childPath: String,
         private val fileNameWithExtension: String,
     ) : WriteExecutor<Uri, ErrorReason> {
-        override suspend fun write(activity: FragmentActivity, data: ByteArray): FileResult<Uri, ErrorReason> {
+        override suspend fun <DATA> write(activity: FragmentActivity, data: DATA, writer: (DATA, File) -> Unit): FileResult<Uri, ErrorReason> {
             if (!FileHelper.isValidFileNameWithExtension(fileNameWithExtension)) {
                 return FileResult.Error(ErrorReason.InvalidFileNameWithExtension(fileNameWithExtension))
             }
@@ -54,7 +54,7 @@ class ExternalAppSpecificCache {
             }
             val file = File(directory, fileNameWithExtension)
             return try {
-                FileHelper.writeFile(data, file)
+                writer(data, file)
                 FileResult.Success(Uri.fromFile(file))
             } catch (e: Exception) {
                 FileResult.Error(ErrorReason.CannotWriteFile(e))

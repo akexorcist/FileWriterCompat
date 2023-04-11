@@ -9,7 +9,6 @@ import java.io.File
 
 class InternalAppSpecificFile {
     sealed class ErrorReason {
-
         @Suppress("unused")
         class InvalidFileNameWithExtension(
             val fileNameWithExtension: String
@@ -44,7 +43,7 @@ class InternalAppSpecificFile {
         private var fileNameWithExtension: String,
         private var childPath: String,
     ) : WriteExecutor<Uri, ErrorReason> {
-        override suspend fun write(activity: FragmentActivity, data: ByteArray): FileResult<Uri, ErrorReason> {
+        override suspend fun <DATA> write(activity: FragmentActivity, data: DATA, writer: (DATA, File) -> Unit): FileResult<Uri, ErrorReason> {
             if (!FileHelper.isValidFileNameWithExtension(fileNameWithExtension)) {
                 return FileResult.Error(ErrorReason.InvalidFileNameWithExtension(fileNameWithExtension))
             }
@@ -55,7 +54,7 @@ class InternalAppSpecificFile {
             }
             val file = File(directory, fileNameWithExtension)
             return try {
-                FileHelper.writeFile(data, file)
+                writer(data, file)
                 FileResult.Success(Uri.fromFile(file))
             } catch (e: Exception) {
                 FileResult.Error(ErrorReason.CannotWriteFile(e))
