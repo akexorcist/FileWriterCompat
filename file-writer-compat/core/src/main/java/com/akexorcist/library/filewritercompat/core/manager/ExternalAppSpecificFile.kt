@@ -2,14 +2,13 @@ package com.akexorcist.library.filewritercompat.core.manager
 
 import android.net.Uri
 import androidx.fragment.app.FragmentActivity
-import com.akexorcist.library.filewritercompat.core.FileWriter
+import com.akexorcist.library.filewritercompat.core.WriteExecutor
 import com.akexorcist.library.filewritercompat.core.FileResult
 import com.akexorcist.library.filewritercompat.core.utility.FileHelper
 import java.io.File
 
 class ExternalAppSpecificFile {
     sealed class ErrorReason {
-
         @Suppress("unused")
         class InvalidFileNameWithExtension(
             val fileNameWithExtension: String
@@ -44,19 +43,19 @@ class ExternalAppSpecificFile {
             this.childPath = childPath
         }
 
-        fun build(): FileWriter<Uri, ErrorReason> = Writer(
+        fun build(): WriteExecutor<Uri, ErrorReason> = Executor(
             directoryType = directoryType,
             childPath = childPath ?: "",
             fileNameWithExtension = fileNameWithExtension,
         )
     }
 
-    class Writer(
+    class Executor(
         private val directoryType: String?,
         private val childPath: String,
         private val fileNameWithExtension: String,
-    ) : FileWriter<Uri, ErrorReason> {
-        override suspend fun write(activity: FragmentActivity, data: ByteArray): FileResult<Uri, ErrorReason> {
+    ) : WriteExecutor<Uri, ErrorReason> {
+        override suspend fun <DATA> write(activity: FragmentActivity, data: DATA, writer: suspend (DATA, File) -> Unit): FileResult<Uri, ErrorReason> {
             if (!FileHelper.isValidFileNameWithExtension(fileNameWithExtension)) {
                 return FileResult.Error(ErrorReason.InvalidFileNameWithExtension(fileNameWithExtension))
             }
@@ -70,7 +69,7 @@ class ExternalAppSpecificFile {
             }
             val file = File(directory, fileNameWithExtension)
             return try {
-                FileHelper.writeFile(data, file)
+                writer(data, file)
                 FileResult.Success(Uri.fromFile(file))
             } catch (e: Exception) {
                 FileResult.Error(ErrorReason.CannotWriteFile(e))

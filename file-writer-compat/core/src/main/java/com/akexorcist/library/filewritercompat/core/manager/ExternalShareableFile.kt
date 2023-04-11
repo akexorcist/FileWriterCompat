@@ -3,7 +3,7 @@ package com.akexorcist.library.filewritercompat.core.manager
 import android.net.Uri
 import android.os.Environment
 import androidx.fragment.app.FragmentActivity
-import com.akexorcist.library.filewritercompat.core.FileWriter
+import com.akexorcist.library.filewritercompat.core.WriteExecutor
 import com.akexorcist.library.filewritercompat.core.permission.StoragePermissionRequest
 import com.akexorcist.library.filewritercompat.core.FileResult
 import com.akexorcist.library.filewritercompat.core.utility.FileHelper
@@ -13,7 +13,6 @@ import java.io.File
 
 class ExternalShareableFile {
     sealed class ErrorReason {
-
         @Suppress("unused")
         class InvalidFileNameWithExtension(
             val fileNameWithExtension: String
@@ -56,7 +55,7 @@ class ExternalShareableFile {
             this.storagePermissionRequest = storagePermissionRequest
         }
 
-        fun build(): FileWriter<Uri, ErrorReason> = Writer(
+        fun build(): WriteExecutor<Uri, ErrorReason> = Executor(
             directoryType = directoryType,
             childPath = childPath ?: "",
             fileNameWithExtension = fileNameWithExtension,
@@ -64,13 +63,13 @@ class ExternalShareableFile {
         )
     }
 
-    class Writer(
+    class Executor(
         private val directoryType: String,
         private val childPath: String,
         private val fileNameWithExtension: String,
         private val storagePermissionRequest: StoragePermissionRequest,
-    ) : FileWriter<Uri, ErrorReason> {
-        override suspend fun write(activity: FragmentActivity, data: ByteArray): FileResult<Uri, ErrorReason> {
+    ) : WriteExecutor<Uri, ErrorReason> {
+        override suspend fun <DATA> write(activity: FragmentActivity, data: DATA, writer: suspend (DATA, File) -> Unit): FileResult<Uri, ErrorReason> {
             if (!FileHelper.isValidFileNameWithExtension(fileNameWithExtension)) {
                 return FileResult.Error(ErrorReason.InvalidFileNameWithExtension(fileNameWithExtension))
             }
@@ -89,7 +88,7 @@ class ExternalShareableFile {
             }
             val file = File(directory, fileNameWithExtension)
             try {
-                FileHelper.writeFile(data, file)
+                writer(data, file)
             } catch (e: Exception) {
                 return FileResult.Error(ErrorReason.CannotWriteFile(e))
             }
