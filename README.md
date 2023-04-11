@@ -56,34 +56,34 @@ suspend fun saveFileToInternalAppSpecificFile(
 
 ```kotlin
 // Internal app-specific file
-val fileWriter: InternalAppSpecificFile.Writer = FileWriterCompat.Builder
+val executor: InternalAppSpecificFile.Executor = FileWriterCompat.Builder
     .createInternalAppSpecificFile(/* ... */)
     .build()
-val result: FileRequest<Uri, InternalAppSpecificFile.ErrorReason> = fileWriter.write(/* ... */)
+val result: FileRequest<Uri, InternalAppSpecificFile.ErrorReason> = executor.write(/* ... */)
 
 // Internal app-specific cache
-val fileWriter: InternalAppSpecificCache.Writer = FileWriterCompat.Builder
+val executor: InternalAppSpecificCache.Executor = FileWriterCompat.Builder
     .createInternalAppSpecificCache(/* ... */)
     .build()
-val result: FileRequest<Uri, InternalAppSpecificCache.ErrorReason> = fileWriter.write(/* ... */)
+val result: FileRequest<Uri, InternalAppSpecificCache.ErrorReason> = executor.write(/* ... */)
 
 // External app-specific file
-val fileWriter: ExternalAppSpecificFile.Writer = FileWriterCompat.Builder
+val executor: ExternalAppSpecificFile.Executor = FileWriterCompat.Builder
     .createExternalAppSpecificFile(/* ... */)
     .build()
-val result: FileRequest<Uri, ExternalAppSpecificFile.ErrorReason> = fileWriter.write(/* ... */)
+val result: FileRequest<Uri, ExternalAppSpecificFile.ErrorReason> = executor.write(/* ... */)
 
 // External app-specific cache
-val fileWriter: ExternalAppSpecificCache.Writer = FileWriterCompat.Builder
+val executor: ExternalAppSpecificCache.Executor = FileWriterCompat.Builder
     .createExternalAppSpecificCache(/* ... */)
     .build()
-val result: FileRequest<Uri, ExternalAppSpecificCache.ErrorReason> = fileWriter.write(/* ... */)
+val result: FileRequest<Uri, ExternalAppSpecificCache.ErrorReason> = executor.write(/* ... */)
 
 // External shareable file
-val fileWriter: ExternalShareableFile.Writer = FileWriterCompat.Builder
+val executor: ExternalShareableFile.Executor = FileWriterCompat.Builder
     .createExternalShareableFile(/* ... */)
     .build()
-val result: FileRequest<Uri, ExternalShareableFile.ErrorReason> = fileWriter.write(/* ... */)
+val result: FileRequest<Uri, ExternalShareableFile.ErrorReason> = executor.write(/* ... */)
 ```
 
 ### Internal app-specific file's parameter
@@ -149,7 +149,7 @@ There are two solutions to handle the runtime permission requesting in this libr
 
 ```kotlin
 val customStoragePermissionRequest: StoragePermissionRequest = /* ... */ 
-val fileWriter: ExternalShareableFile.Writer = FileWriterCompat.Builder.createExternalShareableFile(/* ... */)
+val executor: ExternalShareableFile.Executor = FileWriterCompat.Builder.createExternalShareableFile(/* ... */)
     .setStoragePermissionRequest(customStoragePermissionRequest)
     .build()
 ```
@@ -169,14 +169,45 @@ object CustomStoragePermissionRequest: StoragePermissionRequest {
 }
 ```
 
+## Data type
+There are 4 overloaded methods for the write method:
+
+```kotlin
+suspend fun write(activity: FragmentActivity, data: ByteArray): FileResult<Uri, ErrorReaon>
+suspend fun write(activity: FragmentActivity, data: String): FileResult<Uri, ErrorReaon>
+suspend fun write(activity: FragmentActivity, data: Any): FileResult<Uri, ErrorReaon>
+suspend fun <DATA> write(activity: FragmentActivity, data: DATA, writer: (DATA, File) -> Unit): FileResult<Uri, ErrorReaon>
+```
+
+Additionally, you can create your custom data writer function for any data type.
+
+For example:
+
+```kotlin
+val customWriter = { data: Int, file: File ->
+  if (!file.exists()) {
+    file.createNewFile()
+  }
+  val fos = FileOutputStream(file)
+  ObjectOutputStream(fos).use {
+    it.writeInt(data)
+  }
+}
+
+val data: Int = 1024
+val activity: FragmentActivity
+val executor: WriterExecutor<Uri, ErrorReason> = /* ... */
+val result: FileResult<Uri, ErrorReason> = executor.write(activity, data, customWriter)
+```
+
 ## Error handling
 When the `write` method is called, the result from this method will be `FileResult<Uri, ErrorReason>`.
 
 The `ErrorReason` depends on what kind of directory you are using. For example, the result will be `FileResult<Uri, ExternalShareableFile.ErrorReason>` when you create the file writer with `ExternalShareableFile.Builder`.
 
 ```kotlin
-val fileWriter: ExternalShareableFile.Writer = /* ... */
-val result: FileResult<Uri, ExternalShareableFile.ErrorReason> = fileWriter.write(/* ... */)
+val executor: ExternalShareableFile.Executor = /* ... */
+val result: FileResult<Uri, ExternalShareableFile.ErrorReason> = executor.write(/* ... */)
 when (result) {
     is FileResult.Success<Uri> -> { 
         /* File was saved */ 
