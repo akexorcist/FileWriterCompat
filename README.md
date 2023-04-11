@@ -230,6 +230,21 @@ when (result) {
 
 Each type of directory has a different error reason.
 
+## Troubleshooting
+### Minimum SDK version cannot be smaller than version 23 declared in library `[com.markodevcic:peko:<version>]`
+This can happen when you use `com.akexorcist.filewritercompat:permission`, as the Peko library has a minimum SDK version at 23.
+
+To solve this problem, declare the `<uses-sdk>` tag in your Android manifest to force usage:
+
+```xml
+<application>
+  
+  <uses-sdk tools:overrideLibrary="com.markodevcic.peko"/>
+  
+  <!-- ... -->
+</application>
+```
+
 Licence
 ===========================
 Copyright 2023 Akexorcist
