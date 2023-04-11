@@ -28,7 +28,7 @@ Feature
 * Support for API level 23 - 33
 * Auto-create subdirectories
 * Built-in permission handling (additional dependency is required)
-* Auto media scanner triggers when saving a file in an external shareable location
+* Auto media scanner triggers when saving a file in an external shareable directory
 
 Usage
 ===========================
@@ -110,11 +110,11 @@ val result: FileRequest<Uri, ExternalShareableFile.ErrorReason> = fileWriter.wri
 
 **Requires**
 
-* Directory type (String) - e.g, `Environment.DIRECTORY_PICTURES`
 * Filename with extension (String) - e.g, `"image.jpg"`
 
 **Optional**
 
+* Directory type (String) - e.g, `Environment.DIRECTORY_PICTURES`
 * Child path (String) - e.g, `"sample/exported"`
 
 ### External app-specific cache's parameter
