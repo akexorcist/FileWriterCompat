@@ -56,9 +56,9 @@ class MainActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 addTimestampAndSaveAsFile { data: ByteArray, fileName: String ->
                     FileWriterCompat.Builder.createExternalAppSpecificFile(
-                        directoryType = Environment.DIRECTORY_PICTURES,
                         fileNameWithExtension = fileName,
                     )
+                        .setDirectoryType(Environment.DIRECTORY_PICTURES)
                         .setChildPath("sample/exported")
                         .build()
                         .write(this@MainActivity, data)

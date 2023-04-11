@@ -21,7 +21,8 @@ internal object FileHelper {
 
     internal fun isValidFileNameWithExtension(nameWithExtension: String) = nameWithExtension.matches("^[\\w,\\s-]+\\.[A-Za-z]+\$".toRegex())
 
-    internal fun isValidDirectoryType(directoryType: String) = mutableListOf(
+    internal fun isValidDirectoryType(directoryType: String?) = mutableListOf(
+        null,
         Environment.DIRECTORY_MUSIC,
         Environment.DIRECTORY_PODCASTS,
         Environment.DIRECTORY_RINGTONES,

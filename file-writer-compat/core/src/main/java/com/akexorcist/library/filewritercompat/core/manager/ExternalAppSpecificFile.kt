@@ -17,7 +17,7 @@ class ExternalAppSpecificFile {
 
         @Suppress("unused")
         class InvalidDirectoryType(
-            val directoryType: String
+            val directoryType: String?
         ) : ErrorReason()
 
         @Suppress("unused")
@@ -32,10 +32,14 @@ class ExternalAppSpecificFile {
     }
 
     class Builder(
-        private var directoryType: String,
+        private var directoryType: String?,
         private var fileNameWithExtension: String,
         private var childPath: String?,
     ) {
+        fun setDirectoryType(type: String?) = this.apply {
+            this.directoryType = type
+        }
+
         fun setChildPath(childPath: String) = this.apply {
             this.childPath = childPath
         }
@@ -48,7 +52,7 @@ class ExternalAppSpecificFile {
     }
 
     class Writer(
-        private val directoryType: String,
+        private val directoryType: String?,
         private val childPath: String,
         private val fileNameWithExtension: String,
     ) : FileWriter<Uri, ErrorReason> {

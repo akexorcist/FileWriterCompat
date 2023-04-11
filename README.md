@@ -28,6 +28,7 @@ Feature
 * Support for API level 23 - 33
 * Auto-create subdirectories
 * Built-in permission handling (additional dependency is required)
+* Auto media scanner triggers when saving a file in an external shareable directory
 
 Usage
 ===========================
@@ -109,11 +110,11 @@ val result: FileRequest<Uri, ExternalShareableFile.ErrorReason> = fileWriter.wri
 
 **Requires**
 
-* Directory type (String) - e.g, `Environment.DIRECTORY_PICTURES`
 * Filename with extension (String) - e.g, `"image.jpg"`
 
 **Optional**
 
+* Directory type (String) - e.g, `Environment.DIRECTORY_PICTURES`
 * Child path (String) - e.g, `"sample/exported"`
 
 ### External app-specific cache's parameter
@@ -144,7 +145,7 @@ The `Manifest.permission.WRITE_EXTERNAL_STORAGE_PERMISSION` must be granted when
 
 There are two solutions to handle the runtime permission requesting in this library:
 1. Call the runtime permission requesting before calling this library when running on Android 10 or lower.
-2. Create a custom `StoragePermissionRequest` and inject it in `ExternalShareable.Builder`.
+2. Create a custom `StoragePermissionRequest` and inject it in `ExternalShareableFile.Builder`.
 
 ```kotlin
 val customStoragePermissionRequest: StoragePermissionRequest = /* ... */ 
