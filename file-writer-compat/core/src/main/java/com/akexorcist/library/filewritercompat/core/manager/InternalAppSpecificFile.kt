@@ -43,7 +43,7 @@ class InternalAppSpecificFile {
         private var fileNameWithExtension: String,
         private var childPath: String,
     ) : WriteExecutor<Uri, ErrorReason> {
-        override suspend fun <DATA> write(activity: FragmentActivity, data: DATA, writer: (DATA, File) -> Unit): FileResult<Uri, ErrorReason> {
+        override suspend fun <DATA> write(activity: FragmentActivity, data: DATA, writer: suspend (DATA, File) -> Unit): FileResult<Uri, ErrorReason> {
             if (!FileHelper.isValidFileNameWithExtension(fileNameWithExtension)) {
                 return FileResult.Error(ErrorReason.InvalidFileNameWithExtension(fileNameWithExtension))
             }
