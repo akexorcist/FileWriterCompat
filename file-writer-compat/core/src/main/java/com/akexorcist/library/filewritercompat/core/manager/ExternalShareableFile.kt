@@ -76,9 +76,12 @@ class ExternalShareableFile {
             if (!FileHelper.isValidDirectoryType(directoryType)) {
                 return FileResult.Error(ErrorReason.InvalidDirectoryType(directoryType))
             }
-            if (VersionHelper.isApi29OrLower() && !PermissionHelper.isWriteExternalStoragePermissionGranted(activity)) {
+            if (VersionHelper.isAtLeastApi23() &&
+                VersionHelper.isApi29OrLower() &&
+                PermissionHelper.isWriteExternalStoragePermissionDenied(activity)
+            ) {
                 storagePermissionRequest.requestWriteExternalStoragePermission(activity)
-                if (!PermissionHelper.isWriteExternalStoragePermissionGranted(activity))
+                if (PermissionHelper.isWriteExternalStoragePermissionDenied(activity))
                     return FileResult.Error(ErrorReason.WriteExternalStoragePermissionDenied)
             }
             val directory = File(Environment.getExternalStoragePublicDirectory(directoryType), childPath)

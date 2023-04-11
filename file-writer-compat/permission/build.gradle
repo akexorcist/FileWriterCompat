@@ -1,7 +1,7 @@
 buildscript {
     project.ext {
         libraryName = 'File Writer Compat - Permission'
-        libraryDescription = 'Android file writing helper library for API Level 23+'
+        libraryDescription = 'Android file writing helper library for API Level 21+'
 
         groupId = 'com.akexorcist.filewritercompat'
         artifactId = 'permission'

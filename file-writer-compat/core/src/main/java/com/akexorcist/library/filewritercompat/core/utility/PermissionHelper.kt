@@ -11,4 +11,6 @@ internal object PermissionHelper {
             context,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE
         ) == PackageManager.PERMISSION_GRANTED
+
+    internal fun isWriteExternalStoragePermissionDenied(context: Context) = !isWriteExternalStoragePermissionGranted(context)
 }
