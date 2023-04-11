@@ -10,10 +10,10 @@ Download
 **Gradle**
 
 ```groovy
-implementation 'com.akexorcist.filewritercompat:core:1.0.0'
+implementation 'com.akexorcist.filewritercompat:core:1.1.0'
 
 // If you want to handle the runtime permission requesting from the library 
-implementation 'com.akexorcist.filewritercompat:permission:1.0.0'
+implementation 'com.akexorcist.filewritercompat:permission:1.1.0'
 ```
 
 Feature
