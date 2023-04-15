@@ -1,37 +1,39 @@
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.akexorcist.filewritercompat/core/badge.svg)](https://search.maven.org/artifact/com.akexorcist.filewritercompat/core)
-![Minimum SDK Version](https://img.shields.io/badge/minSdkVersion-23-brightgreen)
+![Android Kotlin](https://img.shields.io/badge/Android-Kotlin-6C3FD1.svg?style=flat&logo=android)
+![Minimum SDK Version](https://img.shields.io/badge/API-21+-brightgreen)
+![Apache 2.0](https://img.shields.io/badge/License-Apache%202-brightgreen)
 
-File Writer Compat
-==============================
+[![Maven Central - Core](https://img.shields.io/maven-central/v/com.akexorcist.filewritercompat/core?color=brightgreen&label=Core)](https://search.maven.org/artifact/com.akexorcist/round-corner-progress-bar)
+[![Maven Central - Permission](https://img.shields.io/maven-central/v/com.akexorcist.filewritercompat/core?color=brightgreen&label=Permission)](https://search.maven.org/artifact/com.akexorcist/round-corner-progress-bar)
+
+# File Writer Compat
+
 Android file writing helper library for API Level 21+
 
-Download
-===============================
+# Download
+
 **Gradle**
 
 ```groovy
 implementation 'com.akexorcist.filewritercompat:core:1.1.0'
 
-// If you want to handle the runtime permission requesting from the library 
+// If you want to handle the runtime permission requesting from the library
 implementation 'com.akexorcist.filewritercompat:permission:1.1.0'
 ```
 
-Feature
-===========================
+# Feature
 
-* Write files to these directories:
-    * Internal app-specific file (`/data/data/<package_name>/files/`)
-    * Internal app-specific cache (`/data/data/<package_name>/cache/`)
-    * External app-specific file (`/<external_storage>/Android/data/<package_name>/files/`)
-    * External app-specific cache (`/<external_storage>/Android/data/<package_name>/cache/`)
-    * External shareable file (`/<external_storage>/<directory_type>/`)
-* Support for API level 21 - 33
-* Auto-create subdirectories
-* Built-in permission handling (additional dependency is required)
-* Auto media scanner triggers when saving a file in an external shareable directory
+- Write files to these directories:
+  - Internal app-specific file (`/data/data/<package_name>/files/`)
+  - Internal app-specific cache (`/data/data/<package_name>/cache/`)
+  - External app-specific file (`/<external_storage>/Android/data/<package_name>/files/`)
+  - External app-specific cache (`/<external_storage>/Android/data/<package_name>/cache/`)
+  - External shareable file (`/<external_storage>/<directory_type>/`)
+- Support for API level 21 - 33
+- Auto-create subdirectories
+- Built-in permission handling (additional dependency is required)
+- Auto media scanner triggers when saving a file in an external shareable directory
 
-Usage
-===========================
+# Usage
 
 ## Common usage
 
@@ -90,74 +92,76 @@ val result: FileRequest<Uri, ExternalShareableFile.ErrorReason> = executor.write
 
 **Requires**
 
-* Filename with extension (String) - e.g, `"image.jpg"`
+- Filename with extension (String) - e.g, `"image.jpg"`
 
 **Optional**
 
-* Child path (String) - e.g, `"sample/exported"`
+- Child path (String) - e.g, `"sample/exported"`
 
 ### Internal app-specific cache's parameter
 
 **Requires**
 
-* Filename with extension (String) - e.g, `"image.jpg"`
+- Filename with extension (String) - e.g, `"image.jpg"`
 
 **Optional**
 
-* Child path (String) - e.g, `"sample/exported"`
+- Child path (String) - e.g, `"sample/exported"`
 
 ### External app-specific file's parameter
 
 **Requires**
 
-* Filename with extension (String) - e.g, `"image.jpg"`
+- Filename with extension (String) - e.g, `"image.jpg"`
 
 **Optional**
 
-* Directory type (String) - e.g, `Environment.DIRECTORY_PICTURES`
-* Child path (String) - e.g, `"sample/exported"`
+- Directory type (String) - e.g, `Environment.DIRECTORY_PICTURES`
+- Child path (String) - e.g, `"sample/exported"`
 
 ### External app-specific cache's parameter
 
 **Requires**
 
-* Filename with extension (String) - e.g, `"image.jpg"`
+- Filename with extension (String) - e.g, `"image.jpg"`
 
 **Optional**
 
-* Child path (String) - e.g, `"sample/exported"`
+- Child path (String) - e.g, `"sample/exported"`
 
 ### External shareable file's parameter
 
 **Requires**
 
-* Directory type (String) - e.g, `Environment.DIRECTORY_PICTURES`
-* Filename with extension (String) - e.g, `"image.jpg"`
+- Directory type (String) - e.g, `Environment.DIRECTORY_PICTURES`
+- Filename with extension (String) - e.g, `"image.jpg"`
 
 **Optional**
 
-* Child path (String) - e.g, `"sample/exported"`
-* Storage permission request handing (StoragePermissionRequest) - e.g, `NoOperationStoragePermissionRequest`
+- Child path (String) - e.g, `"sample/exported"`
+- Storage permission request handing (StoragePermissionRequest) - e.g, `NoOperationStoragePermissionRequest`
 
 ## Write external storage permission in external shareable file
 
 The `Manifest.permission.WRITE_EXTERNAL_STORAGE_PERMISSION` must be granted when running on Android 10 or lower. No permission is required for Android 11 or higher.
 
 There are two solutions to handle the runtime permission requesting in this library:
+
 1. Call the runtime permission requesting before calling this library when running on Android 10 or lower.
 2. Create a custom `StoragePermissionRequest` and inject it in `ExternalShareableFile.Builder`.
 
 ```kotlin
-val customStoragePermissionRequest: StoragePermissionRequest = /* ... */ 
+val customStoragePermissionRequest: StoragePermissionRequest = /* ... */
 val executor: ExternalShareableFile.Executor = FileWriterCompat.Builder.createExternalShareableFile(/* ... */)
     .setStoragePermissionRequest(customStoragePermissionRequest)
     .build()
 ```
 
 There are two built-in storage permission requests depending on what you want:
-* `NoOperationStoragePermissionRequest` - No operation, just check the permission.
-* `PekoStoragePermissionRequest` - Request the permission with [Peko library](https://github.com/deva666/Peko)
-  * `com.akexorcist.filewritercompat:permission:<latest_version` is required.
+
+- `NoOperationStoragePermissionRequest` - No operation, just check the permission.
+- `PekoStoragePermissionRequest` - Request the permission with [Peko library](https://github.com/deva666/Peko)
+  - `com.akexorcist.filewritercompat:permission:<latest_version` is required.
 
 You can customize this operation by your own:
 
@@ -170,6 +174,7 @@ object CustomStoragePermissionRequest: StoragePermissionRequest {
 ```
 
 ## Data type
+
 There are 4 overloaded methods for the write method:
 
 ```kotlin
@@ -201,6 +206,7 @@ val result: FileResult<Uri, ErrorReason> = executor.write(activity, data, custom
 ```
 
 ## Error handling
+
 When the `write` method is called, the result from this method will be `FileResult<Uri, ErrorReason>`.
 
 The `ErrorReason` depends on what kind of directory you are using. For example, the result will be `FileResult<Uri, ExternalShareableFile.ErrorReason>` when you create the file writer with `ExternalShareableFile.Builder`.
@@ -209,15 +215,15 @@ The `ErrorReason` depends on what kind of directory you are using. For example, 
 val executor: ExternalShareableFile.Executor = /* ... */
 val result: FileResult<Uri, ExternalShareableFile.ErrorReason> = executor.write(/* ... */)
 when (result) {
-    is FileResult.Success<Uri> -> { 
-        /* File was saved */ 
+    is FileResult.Success<Uri> -> {
+        /* File was saved */
         val uri: Uri = result.result
     }
-    is FileResult.Error<ExternalShareableFile.ErrorReason> -> { 
+    is FileResult.Error<ExternalShareableFile.ErrorReason> -> {
         /* File was not saved for some reason */
         when (result.reason) {
             is ExternalShareableFile.ErrorReason.WriteExternalStoragePermissionDenied -> {
-                /* WRITER_EXTERNAL_STORAGE permission was denied */ 
+                /* WRITER_EXTERNAL_STORAGE permission was denied */
             }
             is ExternalShareableFile.ErrorReason.InvalidDirectoryType -> {
                 /* Invalid directory type parameter */
@@ -231,22 +237,24 @@ when (result) {
 Each type of directory has a different error reason.
 
 ## Troubleshooting
+
 ### Minimum SDK version cannot be smaller than version 23 declared in library `[com.markodevcic:peko:<version>]`
+
 This can happen when you use `com.akexorcist.filewritercompat:permission`, as the Peko library has a minimum SDK version at 23.
 
 To solve this problem, declare the `<uses-sdk>` tag in your Android manifest to force usage:
 
 ```xml
 <application>
-  
+
   <uses-sdk tools:overrideLibrary="com.markodevcic.peko"/>
-  
+
   <!-- ... -->
 </application>
 ```
 
-Licence
-===========================
+# Licence
+
 Copyright 2023 Akexorcist
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this work except in
